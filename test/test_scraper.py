@@ -2,8 +2,7 @@
 
 """Tests for scraper project"""
 import unittest
-
-from scraper import AecSite
+from scraper.scraper import AecSite
 
 class Test(unittest.TestCase):
 
