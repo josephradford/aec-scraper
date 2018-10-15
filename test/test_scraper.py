@@ -2,12 +2,14 @@
 
 """Tests for scraper project"""
 import unittest
-from scraper.scraper import AecSite
+from scraper.scraper import SiteParser
+import os
+from bs4 import BeautifulSoup
 
 class Test(unittest.TestCase):
 
-
     def setUp(self):
+        self.test_dir = os.path.dirname(os.path.realpath(__file__))
         pass
 
 
@@ -15,16 +17,17 @@ class Test(unittest.TestCase):
         pass
 
 
-    def testYearRangeFetched(self):
-        aec = AecSite("AnalysisParty")
-        self.assertTrue(aec.is_connected())
+    def testComboBoxParsed(self):
+        with open(self.test_dir + "\\data\\Home - Annual Returns.html") as fp:
+            soup = BeautifulSoup(fp, "html.parser")
         
-        aec.get_year_range()
+        sp = SiteParser(soup)
+        results = sp.get_combo_box("dropDownListPeriod")
         
-        self.assertEqual(aec.periods[0]["year"], "1998-1999")
-        self.assertEqual(aec.periods[0]["id"], "1")
+        self.assertEqual(results[0]["value"], "1998-1999")
+        self.assertEqual(results[0]["id"], "1")
         
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+    unittest.main(exit=False)

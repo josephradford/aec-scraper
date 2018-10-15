@@ -4,11 +4,26 @@
 
 import mechanicalsoup
 
+ 
+class SiteParser(object):
+    '''
+    Help parsing objects from a site using a beautifulsoup object
+    '''
+    
+    def __init__(self, sitePage):
+        self.sitePage = sitePage
+
+    def get_combo_box(self, drop_down_name):
+        results = []
+        for option in self.sitePage.find(id=drop_down_name).find_all('option'):
+            results.append({"value":option.text,"id":option['value']})
+        return results
+
+
 class AecSite(object):
     '''
     Access to the AEC website
-    '''
-    
+    '''   
 
     def __init__(self, typeString):
         '''
@@ -31,8 +46,8 @@ class AecSite(object):
     def get_year_range(self):
         for option in self.br.get_current_page().find(id="dropDownListPeriod").find_all('option'):
             self.periods.append({"year":option.text,"id":option['value']})
-        
-            
+       
+
 
 class PartyScraper(object):
     '''
