@@ -2,7 +2,7 @@
 
 """"Classes used to scrape the AEC website"""
 
-import mechanize
+import mechanicalsoup
 
 class AecSite(object):
     '''
@@ -20,25 +20,17 @@ class AecSite(object):
         self.periods = []
         
         
-        self.br = mechanize.Browser()
+        self.br = mechanicalsoup.StatefulBrowser()
         self.response = self.br.open(self.completeUrl)
         
         
     def is_connected(self):
-        return self.response.code == 200
+        return self.response.status_code == 200
     
         
     def get_year_range(self):
-        try:
-            self.br.select_form(nr=2)
-        except:
-            print ('Expected forms did not return')
-            return False
-                    
-                    
-        for ddItem in self.br.form.controls[3].items:
-            self.periods.append({"year":ddItem.attrs["contents"],"id":ddItem.name})
-        
+        for option in self.br.get_current_page().find(id="dropDownListPeriod").find_all('option'):
+            self.periods.append({"year":option.text,"id":option['value']})
         
             
 
